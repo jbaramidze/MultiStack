@@ -1,9 +1,9 @@
 CC=g++
 CFLAGS=-I.
 TESTFLAGS=-lgtest -lpthread
-DEPS = MyStackContainer.h
-OBJ = MyStackContainer.o app.o 
-TESTOBJ = MyStackContainer.o test.o
+DEPS = MultiStack.h
+OBJ = MultiStack.o app.o 
+TESTOBJ = MultiStack.o test.o
 
 %.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)

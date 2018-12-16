@@ -33,12 +33,12 @@
 #define ERR_INVALID_INDEX 1
 #define ERR_OUT_OF_MEM    2
 
-class MyStackContainer {
+class MultiStack {
 
-    class MyStack {
+    class MultiStackItem {
 
         public:
-        MyStack(MyStackContainer *parent, int index, int start, int size, int capacity, bool growUpwards);
+        MultiStackItem(MultiStack *parent, int index, int start, int size, int capacity, bool growUpwards);
 
         bool growsUpwards();
         bool growsDownwards();
@@ -69,7 +69,7 @@ class MyStackContainer {
         int start_;
         int capacity_;
         bool growUpwards_;
-        MyStackContainer *parent_;
+        MultiStack *parent_;
 
         // Only for debugging.
         int index_;
@@ -78,7 +78,7 @@ class MyStackContainer {
     bool isValidStackIndex(int index);
 
     public:
-    MyStackContainer(int size, int numStacks);
+    MultiStack(int size, int numStacks);
 
     // make private & friend.
     void set(int offset, int val);
@@ -103,6 +103,6 @@ class MyStackContainer {
     int *data_;
     int size_;
 
-    MyStack **stacks_;
+    MultiStackItem **stacks_;
     int numStacks_;
 };

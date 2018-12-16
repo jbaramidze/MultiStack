@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "MyStackContainer.h"
+#include "MultiStack.h"
 using namespace std;
 
 #define DEBUG
@@ -8,7 +8,7 @@ int main() {
     cout << "Size of whole array and # of stacks inside:\n";
     int size, splits;
     cin >> size >> splits;
-    MyStackContainer *stacks = new MyStackContainer(size, splits);
+    MultiStack *stacks = new MultiStack(size, splits);
 
     cout << "Operations:\n";
     cout << "Push to stack #i value v: push i v\n";

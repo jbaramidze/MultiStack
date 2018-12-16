@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
 #include <stdarg.h>
 #include <vector>
-#include "MyStackContainer.h"
+#include "MultiStack.h"
 
-#define INIT(size, splits) MyStackContainer *stacks = new MyStackContainer(size, splits); \
+#define INIT(size, splits) MultiStack *stacks = new MultiStack(size, splits); \
                            int error = -1;                                                \
                            int res = -1;
 
@@ -28,7 +28,7 @@
 
 
 
-void stack_equals(MyStackContainer *stacks, int index, int size ...) {
+void stack_equals(MultiStack *stacks, int index, int size ...) {
 	va_list ap;
 	int error = -1;
 	int res = -1;
