@@ -146,25 +146,25 @@ bool MyStackContainer::isValidStackIndex(int index)
     return index >= 0 && index < numStacks_;
 }
 
-MyStackContainer::MyStackContainer(int size, int numStacks)
+MyStackContainer::MyStackContainer(int totalSize, int numStacks)
 {
-    data_ = new int[size];
+    data_ = new int[totalSize];
     stacks_ = new MyStack*[numStacks];
 
-    int size_each = size/numStacks;
+    int size_each = totalSize/numStacks;
 
     for (int i = 0; i < numStacks; i++)
     {
         int begin = (i % 2 == 0) ? i * size_each : ((i + 1) * size_each - 1);
         
         int size = size_each;
-        if (i == numStacks - 1) size += (size_ % numStacks);
+        if (i == numStacks - 1) size += (totalSize % numStacks);
 
         stacks_[i] = new MyStack(this, i, begin, 0, size, i % 2 == 0);
     }
 
     numStacks_ = numStacks;
-    size_ = size;
+    size_ = totalSize;
 }
 
 void MyStackContainer::set(int offset, int val) 
@@ -240,14 +240,25 @@ void MyStackContainer::shiftUp(int index)
 
     // If the above stack has some space, shrink it 
     MyStack *next = stacks_[getNextIndex(index)];
-    if (!next -> isFull()) {
+    if (next -> growsDownwards() && !next -> isFull()) {
         next -> decCap();
         stack -> shiftUp();
         return;
     }
 
     // If none of those worked, ask the same to next group.
-    shiftUp(getNextIndex(getNextIndex(index)));
+    if (next -> growsDownwards())
+    {
+        shiftUp(getNextIndex(getNextIndex(index)));
+        next -> shiftUp();
+        stack -> shiftUp();
+    } else {
+        // Case of overflow.
+        shiftUp(getNextIndex(index));
+        stack -> shiftUp();
+    }
+
+
 }
 
 bool MyStackContainer::expand(int index, int &error)

@@ -100,16 +100,49 @@ TEST(MainTest, Simple_shiftNext) {
     PUSH(0, 1);
     PUSH(0, 2);
     PUSH(0, 3);
-
-    stacks -> dump();
     PUSH(0, 4);
     PUSH(0, 5);
-
-    stacks -> dump();
 
     stack_equals(stacks, 2, 2, 21, 20);
     stack_equals(stacks, 0, 5, 5, 4, 3, 2, 1);
     stack_equals(stacks, 1, 1, 11);
+}
+ 
+
+TEST(MainTest, Simple_OverflowEven) {
+    INIT(9, 3);
+    PUSH(0, 1);
+
+    PUSH(2, 21);
+    PUSH(2, 22);
+    PUSH(2, 23);
+    PUSH(2, 24);
+    PUSH(2, 25);
+
+    stack_equals(stacks, 0, 1, 1);
+    stack_equals(stacks, 2, 5, 25, 24, 23, 22, 21);
+}
+ 
+
+TEST(MainTest, OverflowEven) {
+    INIT(10, 5);
+    PUSH(0, 1);
+
+    PUSH(4, 41);
+    PUSH(4, 42);
+    PUSH(4, 43);
+
+    PUSH(2, 21);
+    PUSH(2, 22);
+    PUSH(2, 23);
+    PUSH(2, 24);
+    PUSH(2, 25);
+    PUSH(2, 26);
+
+    stack_equals(stacks, 0, 1, 1);
+    stack_equals(stacks, 2, 6, 26, 25, 24, 23, 22, 21);
+    stack_equals(stacks, 4, 3, 43, 42, 41);
+
 }
  
 int main(int argc, char **argv) {
