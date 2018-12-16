@@ -102,10 +102,15 @@ int MyStackContainer::MyStack::pop()
 void MyStackContainer::MyStack::shiftUp() 
 {
     cout << "shiftUp() of #" << index_ << "\n";
-    assert(size_ < capacity_);
 
-    for (int i = size_ - 1; i>=0; i--) {
-         set(i + 1, get(i));
+    if (growsUpwards()) {
+        for (int i = size_ - 1; i>=0; i--) {
+             set(i + 1, get(i));
+        }
+    } else {
+        for (int i = 0; i < size_; i++) {
+             set(i - 1, get(i));
+        }
     }
 
     start_++;
@@ -128,7 +133,11 @@ void MyStackContainer::MyStack::dump()
 {
     cout << "Size: " << size_ << " Start: " << start_ << " Capacity: " << capacity_ << (growUpwards_ ? " Upwards\n" : " Downwards\n");
     cout << "Elements:";
-    for (int i = 0; i < size_; i++) cout << parent_ -> get(start_ + i) << " ";
+    if (growsUpwards()) {
+        for (int i = 0; i < size_; i++) cout << parent_ -> get(start_ + i) << " ";
+    } else {
+        for (int i = 0; i < size_; i++) cout << parent_ -> get(start_ - i) << " ";
+    }
     cout << "\n";
 }
 
@@ -149,7 +158,7 @@ MyStackContainer::MyStackContainer(int size, int numStacks)
         int begin = (i % 2 == 0) ? i * size_each : ((i + 1) * size_each - 1);
         
         int size = size_each;
-        if (i == numStacks - 1) size += size % numStacks;
+        if (i == numStacks - 1) size += (size_ % numStacks);
 
         stacks_[i] = new MyStack(this, i, begin, 0, size, i % 2 == 0);
     }
@@ -216,6 +225,7 @@ bool MyStackContainer::allFull()
 
 void MyStackContainer::shiftUp(int index)
 {
+    cout << "Shifting up index " << index << ".\n";
     assert(isValidStackIndex(index));
     assert(!allFull());
     assert(stacks_[index] -> growsUpwards());

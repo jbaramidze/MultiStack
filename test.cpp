@@ -55,7 +55,7 @@ void stack_equals(MyStackContainer *stacks, int index, int size ...) {
 }
 
 
-TEST(MainTest, Errors) {
+TEST(MainTest, Simple_errors) {
     INIT(4, 2);
     PUSH(0, 1);
     PUSH(0, 2);
@@ -65,9 +65,10 @@ TEST(MainTest, Errors) {
     POP_FAIL(11, ERR_INVALID_INDEX);
     TOP_FAIL(16, ERR_INVALID_INDEX);
     PUSH_FAIL(1, 5, ERR_OUT_OF_MEM);
+    PUSH_FAIL(0, 5, ERR_OUT_OF_MEM);
 }
 
-TEST(MainTest, Simple_noshifts) {
+TEST(MainTest, Simple_noShifts) {
     INIT(4, 2);
 
     PUSH(0, 1);
@@ -81,6 +82,34 @@ TEST(MainTest, Simple_noshifts) {
     PUSH(1, 8);
     stack_equals(stacks, 0, 2, 2, 1);
     stack_equals(stacks, 1, 2, 8, 3);
+
+    POP(0);
+    POP(0);
+    PUSH(1, 11); 
+    PUSH(1, 12);
+    stack_equals(stacks, 0, 0);
+    stack_equals(stacks, 1, 4, 12, 11, 8, 3);
+}
+
+TEST(MainTest, Simple_shiftNext) {
+    INIT(8, 4);
+
+    PUSH(2, 20);
+    PUSH(2, 21);
+    PUSH(1, 11);
+    PUSH(0, 1);
+    PUSH(0, 2);
+    PUSH(0, 3);
+
+    stacks -> dump();
+    PUSH(0, 4);
+    PUSH(0, 5);
+
+    stacks -> dump();
+
+    stack_equals(stacks, 2, 2, 21, 20);
+    stack_equals(stacks, 0, 5, 5, 4, 3, 2, 1);
+    stack_equals(stacks, 1, 1, 11);
 }
  
 int main(int argc, char **argv) {
