@@ -55,7 +55,7 @@ void stack_equals(MultiStack *stacks, int index, int size ...) {
 }
 
 
-TEST(MainTest, Simple_errors) {
+TEST(MainTest, errors) {
     INIT(4, 2);
     PUSH(0, 1);
     PUSH(0, 2);
@@ -68,7 +68,7 @@ TEST(MainTest, Simple_errors) {
     PUSH_FAIL(0, 5, ERR_OUT_OF_MEM);
 }
 
-TEST(MainTest, Simple_noShifts) {
+TEST(MainTest, noShifts) {
     INIT(4, 2);
 
     PUSH(0, 1);
@@ -91,7 +91,7 @@ TEST(MainTest, Simple_noShifts) {
     stack_equals(stacks, 1, 4, 12, 11, 8, 3);
 }
 
-TEST(MainTest, Simple_shiftNext) {
+TEST(MainTest, shiftNext) {
     INIT(8, 4);
 
     PUSH(2, 20);
@@ -107,9 +107,8 @@ TEST(MainTest, Simple_shiftNext) {
     stack_equals(stacks, 0, 5, 5, 4, 3, 2, 1);
     stack_equals(stacks, 1, 1, 11);
 }
- 
 
-TEST(MainTest, Simple_OverflowEven) {
+TEST(MainTest, OverflowEven) {
     INIT(9, 3);
     PUSH(0, 1);
 
@@ -122,9 +121,8 @@ TEST(MainTest, Simple_OverflowEven) {
     stack_equals(stacks, 0, 1, 1);
     stack_equals(stacks, 2, 5, 25, 24, 23, 22, 21);
 }
- 
 
-TEST(MainTest, OverflowEven) {
+TEST(MainTest, OverflowEven2) {
     INIT(10, 5);
     PUSH(0, 1);
 
@@ -142,7 +140,48 @@ TEST(MainTest, OverflowEven) {
     stack_equals(stacks, 0, 1, 1);
     stack_equals(stacks, 2, 6, 26, 25, 24, 23, 22, 21);
     stack_equals(stacks, 4, 3, 43, 42, 41);
+}
 
+TEST(MainTest, OverflowOdd) {
+    INIT(14, 6);
+
+    PUSH(4, 41);
+    PUSH(5, 51);
+
+    PUSH(2, 21);
+    PUSH(2, 22);
+    PUSH(2, 23);
+    PUSH(2, 24);
+    PUSH(2, 25);
+    PUSH(2, 26);
+    PUSH(2, 27);
+    PUSH(2, 28);
+    PUSH(2, 29);
+    PUSH(2, 210);
+    PUSH(2, 211);
+
+    stack_equals(stacks, 2, 11, 211, 210, 29, 28, 27, 26, 25, 24, 23, 22, 21);
+    stack_equals(stacks, 4, 1, 41);
+    stack_equals(stacks, 5, 1, 51);
+}
+
+TEST(MainTest, UnderflowEvenOdd) {
+    INIT(10, 5);
+
+    PUSH(4, 41);
+
+    PUSH(3, 21);
+    PUSH(3, 22);
+    PUSH(3, 23);
+    PUSH(3, 24);
+    PUSH(3, 25);
+    PUSH(3, 26);
+    PUSH(3, 27);
+    PUSH(3, 28);
+    PUSH(3, 29);
+
+    stack_equals(stacks, 3, 9, 29, 28, 27, 26, 25, 24, 23, 22, 21);
+    stack_equals(stacks, 4, 1, 41);
 }
  
 int main(int argc, char **argv) {

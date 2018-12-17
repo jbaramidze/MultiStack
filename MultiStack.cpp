@@ -113,7 +113,7 @@ void MultiStack::MultiStackItem::shiftUp()
         }
     }
 
-    start_++;
+    start_ = (start_ + 1) % (parent_ -> totalSize());
 }
 
 void MultiStack::dump()
@@ -158,8 +158,11 @@ MultiStack::MultiStack(int totalSize, int numStacks)
         int begin = (i % 2 == 0) ? i * size_each : ((i + 1) * size_each - 1);
         
         int size = size_each;
-        if (i == numStacks - 1) size += (totalSize % numStacks);
-
+        if (i == numStacks - 1)
+        {
+            size += (totalSize % numStacks);
+            if (i % 2 == 1) begin = totalSize - 1;
+        }
         stacks_[i] = new MultiStackItem(this, i, begin, 0, size, i % 2 == 0);
     }
 
@@ -169,14 +172,18 @@ MultiStack::MultiStack(int totalSize, int numStacks)
 
 void MultiStack::set(int offset, int val) 
 {
-    //cout << "Setting " << val << " at " << offset << ".\n";
-    data_[offset % size_] = val;
+    int address = offset % size_;
+    if (address < 0) address += size_;
+
+    data_[address] = val;
 }
 
 int MultiStack::get(int offset) 
 {
-    //cout << "Gettting from " << offset << ".\n";
-    return data_[offset % size_];
+    int address = offset % size_;
+    if (address < 0) address += size_;
+
+    return data_[address];
 }
 
 void MultiStack::push(int index, int val, int &error) 
@@ -221,6 +228,12 @@ bool MultiStack::allFull()
     for (int i = 0; i < numStacks_; i++) size += stacks_[i] -> getSize();
 
     return size == size_;
+}
+
+
+int MultiStack::totalSize()
+{
+    return size_;
 }
 
 void MultiStack::shiftUp(int index)
