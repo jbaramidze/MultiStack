@@ -1,21 +1,28 @@
 #include "gtest/gtest.h"
 #include <stdarg.h>
 #include <vector>
+#include <stack>
 #include "MultiStack.h"
 
 #define INIT(size, splits) MultiStack *stacks = new MultiStack(size, splits); \
                            int error = -1;                                                \
                            int res = -1;
 
-#define PUSH(i, val) stacks -> push(i, val, error);   \
+#define PUSH(i, val) error = -1;                      \
+                     stacks -> push(i, val, error);   \
                      ASSERT_EQ(error, -1);
 
-
-#define POP(i) res = stacks -> pop(i, error); \
+#define POP(i) error = -1;                      \
+               res = stacks -> pop(i, error); \
                ASSERT_EQ(error, -1);
 
-#define TOP(i) res = stacks -> top(i, error); \
+#define TOP(i) error = -1;                      \
+               res = stacks -> top(i, error); \
                ASSERT_EQ(error, -1);
+
+#define SIZE(i) error = -1;                      \
+                res = stacks -> size(i, error); \
+                ASSERT_EQ(error, -1);
 
 #define PUSH_FAIL(i, val, err) stacks -> push(i, val, error);   \
                                ASSERT_EQ(error, err);
@@ -182,6 +189,89 @@ TEST(MainTest, UnderflowEvenOdd) {
 
     stack_equals(stacks, 3, 9, 29, 28, 27, 26, 25, 24, 23, 22, 21);
     stack_equals(stacks, 4, 1, 41);
+}
+
+#define TOTAL_TEST_LOOP 1000
+#define OPS_PER_TEST    200
+
+TEST(MainTest, Randomized) {
+
+    for (int i = 0; i < TOTAL_TEST_LOOP; i++)
+    {
+      srand(time(NULL));
+
+      // [10, 100]
+      int total = (rand() % 91) + 10;
+      // [1, total]
+      int splits = (rand() % total) + 1;
+      int used = 0;
+
+      std::vector< std::stack<int> > S(splits);
+
+      std::cout << "Trying total " << total << ", splits " << splits << "\n";
+
+      INIT(total, splits);
+
+      for (int j = 0; j < OPS_PER_TEST; j++)
+      {
+        int op = rand() % 4;
+
+        /* 0: push()
+           1: pop()
+           2: top()
+           3: size()
+        */
+
+        int index = rand() % splits;
+
+        if (op == 0)
+        {
+          if (used == total) continue;
+          int value = rand() % 1000;
+
+          std::cout << "Pushing " << value << " on #" << index << "\n";
+          PUSH(index, value);
+          S[index].push(value);
+
+          used++;
+        }
+        else if (op == 1)
+        {
+          std::cout << "Popping from #" << index << "\n";
+          if (S[index].size() == 0)
+          {
+            POP_FAIL(index, ERR_EMPTY);
+            continue;
+          }
+
+          int v1 = S[index].top();
+          S[index].pop();
+          POP(index);
+          used--;
+
+          ASSERT_EQ(v1, res);
+        }
+        else if (op == 2) {
+          if (S[index].size() == 0)
+          {
+            TOP_FAIL(index, ERR_EMPTY);
+            continue;
+          }
+
+          int v1 = S[index].top();
+          TOP(index);
+
+          ASSERT_EQ(v1, res);
+        }
+        else if (op == 3) {
+          int v1 = S[index].size();
+          SIZE(index);
+
+          ASSERT_EQ(v1, res);
+        }
+      }
+  }
+
 }
  
 int main(int argc, char **argv) {

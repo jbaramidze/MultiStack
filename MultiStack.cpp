@@ -203,6 +203,8 @@ int MultiStack::top(int index, int &error)
     if (!isValidStackIndex(index)) { error = ERR_INVALID_INDEX; return 0; }
     MultiStackItem *stack = stacks_[index];
 
+    if (stack -> isEmpty()) { error = ERR_EMPTY; return 0; }
+
     return stack -> top();
 }
 
@@ -210,6 +212,8 @@ int MultiStack::pop(int index, int &error)
 {
     if (!isValidStackIndex(index)) { error = ERR_INVALID_INDEX; return 0; }
     MultiStackItem *stack = stacks_[index];
+
+    if (stack -> isEmpty()) { error = ERR_EMPTY; return 0; }
 
     return stack -> pop();
 }
@@ -270,8 +274,6 @@ void MultiStack::shiftUp(int index)
         shiftUp(getNextIndex(index));
         stack -> shiftUp();
     }
-
-
 }
 
 bool MultiStack::expand(int index, int &error)

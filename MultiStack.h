@@ -32,6 +32,7 @@
 
 #define ERR_INVALID_INDEX 1
 #define ERR_OUT_OF_MEM    2
+#define ERR_EMPTY         3
 
 class MultiStack {
 
